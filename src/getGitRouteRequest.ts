@@ -6,6 +6,9 @@ Introdução: https://docs.github.com/en/rest/guides/getting-started-with-the-re
 Pegar commits: https://docs.github.com/pt/rest/commits/commits?apiVersion=2022-11-28
 Pegar repositórios usuário autenticado: https://docs.github.com/pt/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-the-authenticated-user
 pegar usuário autenticado: https://docs.github.com/pt/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
+get branches: https://docs.github.com/pt/rest/branches/branches?apiVersion=2022-11-28
+
+para pegar o auth: https://github.com/settings/tokens
 */
 const octokit = new Octokit({
     auth: "",
@@ -30,6 +33,17 @@ export default function UseOctokit() {
     //     console.log("repoList", result.data);
     // };
 
+    const getBranches = async (owner: string, repo: string) => {
+        const response = await octokit.request(
+            "GET /repos/{owner}/{repo}/branches{?protected,per_page,page}",
+            {
+                owner,
+                repo,
+            }
+        );
+        console.log("branches", response.data);
+    };
+
     const getRepoCommit = async (owner: string, repo: string) => {
         const response = await octokit.request(
             "GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,per_page,page}",
@@ -50,6 +64,7 @@ export default function UseOctokit() {
                 "lubysoftware",
                 "GestaoPessoas.MS.COLLABORATORS"
             );
+            await getBranches("lubysoftware", "GestaoPessoas.MS.COLLABORATORS");
             await octokit
                 .request(
                     "GET /user/repos{?visibility,affiliation,type,sort,direction,per_page,page,since,before}",
